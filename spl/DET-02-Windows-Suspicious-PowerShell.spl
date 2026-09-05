@@ -1,0 +1,25 @@
+index=soc_sysmon host=WIN-END-01 EventCode=1
+(Image="*\\powershell.exe" OR Image="*\\pwsh.exe")
+| eval command_lower=lower(CommandLine)
+| eval suspicious_reason=case(
+    match(command_lower,"-enc(odedcommand)?"),"Encoded Command",
+    match(command_lower,"frombase64string"),"Base64 Decoding",
+    match(command_lower,"downloadstring"),"DownloadString",
+    match(command_lower,"invoke-webrequest"),"Invoke-WebRequest",
+    match(command_lower,"invoke-expression"),"Invoke-Expression",
+    match(command_lower,"executionpolicy bypass"),"ExecutionPolicy Bypass",
+    match(command_lower,"windowstyle hidden"),"Hidden PowerShell",
+    true(),""
+)
+| where suspicious_reason!=""
+| rex field=CommandLine "(?i)(?:-EncodedCommand|-enc)\s+(?<encoded_payload>[A-Za-z0-9+/=]+)"
+| lookup soc_det02_authorized_payloads.csv encoded_payload OUTPUT approved authorization
+| eval approved=coalesce(approved,"No")
+| where suspicious_reason!="Encoded Command" OR approved!="Yes"
+| eval rule_id="DET-02"
+| eval rule_name="Windows Suspicious PowerShell Execution"
+| eval severity="high"
+| eval mitre_technique="T1059.001 - PowerShell"
+| eval correlation_key=host."|".User."|".suspicious_reason
+| table _time host User Image CommandLine ParentImage ParentCommandLine suspicious_reason correlation_key rule_id rule_name severity mitre_technique
+| sort - _time

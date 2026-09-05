@@ -1,0 +1,27 @@
+| datamodel Change All_Changes search
+| search host=WIN-END-01 All_Changes.object_category=registry All_Changes.action IN ("created","modified")
+| where
+    like(lower('All_Changes.object_path'),"%\\software\\microsoft\\windows\\currentversion\\run\\%")
+    OR
+    like(lower('All_Changes.object_path'),"%\\software\\microsoft\\windows\\currentversion\\runonce\\%")
+| eval rule_id="DET-05"
+| eval rule_name="Windows Registry Run Key Persistence"
+| eval severity="high"
+| eval mitre_technique="T1547.001 - Registry Run Keys / Startup Folder"
+| eval correlation_key=host."|".'All_Changes.object_path'
+| table
+    _time
+    host
+    All_Changes.user
+    All_Changes.action
+    All_Changes.change_type
+    All_Changes.object_path
+    All_Changes.object_attrs
+    All_Changes.status
+    All_Changes.vendor_product
+    correlation_key
+    rule_id
+    rule_name
+    severity
+    mitre_technique
+| sort - _time

@@ -1,0 +1,22 @@
+index=soc_linux host=LNX-END-01 sourcetype=linux_secure
+"Failed password for"
+| where match(_raw,"sshd(?:-session)?\[\d+\]: Failed password for ")
+| rex field=_raw "Failed password for (?:invalid user )?(?<target_user>\S+) from (?<src_ip>\S+) port (?<src_port>\d+) ssh2"
+| eval event_time=_time
+| bin _time span=5m
+| stats
+    count as failures
+    dc(src_port) as distinct_src_ports
+    values(src_port) as src_ports
+    earliest(event_time) as first_seen_epoch
+    latest(event_time) as last_seen_epoch
+    by _time host src_ip target_user
+| where failures >= 5
+| eval first_seen=strftime(first_seen_epoch,"%Y-%m-%d %H:%M:%S")
+| eval last_seen=strftime(last_seen_epoch,"%Y-%m-%d %H:%M:%S")
+| eval rule_id="LINUX-SSH-BRUTEFORCE-001"
+| eval rule_name="Linux SSH Brute Force - Repeated Failed Passwords"
+| eval severity="medium"
+| eval mitre_technique="T1110.001 - Password Guessing"
+| eval correlation_key=host."|".src_ip."|".target_user
+| sort - failures

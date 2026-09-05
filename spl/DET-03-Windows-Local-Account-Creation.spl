@@ -1,0 +1,22 @@
+| datamodel Change All_Changes search
+| search host=WIN-END-01 All_Changes.action=created All_Changes.object_category=user
+| eval rule_id="DET-03"
+| eval rule_name="Windows Local Account Creation"
+| eval severity="medium"
+| eval mitre_technique="T1136.001 - Local Account"
+| eval correlation_key=host."|".'All_Changes.object'
+| table
+    _time
+    host
+    All_Changes.user
+    All_Changes.object
+    All_Changes.object_path
+    All_Changes.action
+    All_Changes.status
+    All_Changes.vendor_product
+    correlation_key
+    rule_id
+    rule_name
+    severity
+    mitre_technique
+| sort - _time

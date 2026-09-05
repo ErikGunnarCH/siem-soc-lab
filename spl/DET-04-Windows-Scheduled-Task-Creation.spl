@@ -1,0 +1,43 @@
+index=soc_sysmon host=WIN-END-01 EventCode=1
+(
+    (Image="*\\schtasks.exe" AND CommandLine="*/Create*")
+    OR
+    (
+        (Image="*\\powershell.exe" OR Image="*\\pwsh.exe")
+        AND
+        (
+            CommandLine="*Register-ScheduledTask*"
+            OR CommandLine="*New-ScheduledTask*"
+        )
+    )
+)
+| eval detection_method=case(
+    Image="*\\schtasks.exe", "schtasks /Create",
+    match(lower(CommandLine),"register-scheduledtask"), "Register-ScheduledTask",
+    match(lower(CommandLine),"new-scheduledtask"), "New-ScheduledTask",
+    true(), "Scheduled Task Creation"
+)
+| rex field=CommandLine "(?i)/TN\s+(?:\"(?<task_name_quoted>[^\"]+)\"|(?<task_name_plain>\S+))"
+| rex field=CommandLine "(?i)-TaskName\s+(?:\"(?<ps_task_name_quoted>[^\"]+)\"|(?<ps_task_name_plain>\S+))"
+| eval task_name=coalesce(task_name_quoted,task_name_plain,ps_task_name_quoted,ps_task_name_plain,"unknown")
+| eval rule_id="DET-04"
+| eval rule_name="Windows Scheduled Task Creation"
+| eval severity="high"
+| eval mitre_technique="T1053.005 - Scheduled Task/Job: Scheduled Task"
+| eval correlation_key=host."|".task_name
+| table
+    _time
+    host
+    User
+    Image
+    CommandLine
+    ParentImage
+    ParentCommandLine
+    task_name
+    detection_method
+    correlation_key
+    rule_id
+    rule_name
+    severity
+    mitre_technique
+| sort - _time
