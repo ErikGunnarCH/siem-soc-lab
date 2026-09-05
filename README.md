@@ -18,6 +18,22 @@
 | Windows telemetry | Sysmon process, network and persistence-oriented analysis |
 | Linux telemetry | SSH authentication and audit analysis |
 
+## Selected visual evidence
+
+### Executive case visibility
+
+![SOC Executive Overview](screenshots/executive-overview.webp)
+
+The executive dashboard turns case state into operational metrics such as total, active and closed cases, priority distribution and detection-rule context.
+
+### Detection engineering coverage
+
+![SOC Detection Coverage](screenshots/detection-coverage.webp)
+
+The detection-coverage dashboard shows the 5 implemented detections, 5 mapped ATT&CK techniques, validation maturity and data-source readiness.
+
+More screenshots, including analyst triage and tuning regression evidence, are available in the [visual evidence gallery](screenshots/README.md).
+
 ## What this project demonstrates
 
 This repository is intentionally structured to show practical, entry-level/junior SOC capability rather than only a finished dashboard.
@@ -166,7 +182,7 @@ siem-soc-lab/
 ├── mitre/              # ATT&CK coverage
 ├── playbooks/          # analyst investigation playbooks
 ├── reports/            # tuning and assessment records
-├── screenshots/        # sanitized visual evidence
+├── screenshots/        # curated visual evidence
 └── spl/                # reproducible detection SPL
 ```
 

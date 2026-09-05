@@ -1,12 +1,22 @@
 # Tuning Register
 
-This report summarizes the two detections that completed formal before/after tuning.
+This report summarizes the two detections that completed formal before/after tuning. The emphasis is on measured changes and regression testing rather than tuning by intuition.
 
 ## DET-01 — Linux SSH Brute Force
 
 ### Before
 
 The broad base search selected 81 events containing the text `Failed password for`. Three of those events were not SSH authentication failures; they were `sudo` commands running `grep 'Failed password for' /var/log/secure`.
+
+### Threshold analysis
+
+![DET-01 threshold analysis](../screenshots/tuning/det01-threshold-analysis.webp)
+
+The observed data was tested against multiple candidate thresholds before the production-style saved search was changed.
+
+- `>=5`: preserved 9 observed detection windows.
+- `>=6`: lost one observed five-attempt window.
+- `>=8`: would miss every observed window associated with INC-02.
 
 ### After
 
@@ -23,7 +33,7 @@ The rule was restricted to real `sshd` / `sshd-session` failure messages.
 
 ### Risk analysis
 
-Testing showed that raising the threshold to 6 would lose one observed five-attempt window. Raising it to 8 would miss every observed window associated with INC-02. The threshold was therefore retained and the event-selection logic was improved instead.
+The safer engineering decision was to improve event quality instead of raising the threshold. This reduced irrelevant candidate events without reducing observed window coverage.
 
 ### Decision
 
@@ -42,7 +52,14 @@ Five PowerShell EncodedCommand executions generated detections. Investigation sh
 1. Exclude the analyst account globally.
 2. Allowlist only the exact payloads already validated as authorized.
 
-A synthetic unknown-payload regression test demonstrated that a global user exclusion would suppress a new payload executed by the same account, while the exact-payload allowlist would still detect it.
+### Regression test
+
+![DET-02 regression test](../screenshots/tuning/det02-regression-test.webp)
+
+A synthetic unknown-payload test demonstrated the security trade-off directly:
+
+- **Option A — user exclusion:** would suppress the unknown payload because it was executed by `secadmin`.
+- **Option B — exact-payload allowlist:** suppresses the known authorized payloads but still detects the unknown payload.
 
 ### After
 
@@ -70,5 +87,9 @@ A synthetic unknown-payload regression test demonstrated that a global user excl
 - Confirmed Benign Positive investigated: 1
 - Confirmed False Positives: 0
 - Historical closed case without recorded classification: 1
+
+## Engineering takeaway
+
+Both tuning exercises deliberately avoided the easiest way to reduce alerts. DET-01 kept its sensitivity and removed non-SSH input noise; DET-02 rejected a broad user exclusion and used a narrowly scoped allowlist. This is the central before/after lesson of the lab: **reduce known noise without discarding observable malicious behavior.**
 
 All numbers above are lab-observed values and should not be interpreted as production performance claims.
