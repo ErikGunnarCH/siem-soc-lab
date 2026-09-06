@@ -4,7 +4,8 @@
 
 Purpose: executive-level visibility into SOC case volume, current workload, affected assets, ATT&CK coverage, and investigation progress.
 
-![SOC Executive Overview](../screenshots/executive-overview.webp)
+![SOC Executive Overview]<img width="2880" height="1448" alt="image" src="https://github.com/user-attachments/assets/8466e4ea-c60e-4d7f-8ca5-58ddfc73d5cf" />
+
 
 Key panels:
 
@@ -26,7 +27,10 @@ The dashboard demonstrates that detection results are translated into security-o
 
 Purpose: operational SOC view for active case management, SLA tracking, analyst workload, telemetry activity, and collection health.
 
-![SOC Triage Operations](../screenshots/triage-operations.webp)
+![SOC Triage Operations]<img width="2880" height="1326" alt="image" src="https://github.com/user-attachments/assets/4009715e-4a6a-4ab3-b1ab-3ef1262ce360" />
+<img width="2880" height="1420" alt="image" src="https://github.com/user-attachments/assets/9812f876-89bd-4950-8e84-c6a61717d556" />
+
+
 
 Key panels:
 
@@ -53,7 +57,8 @@ Operational findings discovered while building this dashboard included stale end
 
 Purpose: detection-engineering coverage and validation status.
 
-![SOC Detection Coverage](../screenshots/detection-coverage.webp)
+![SOC Detection Coverage]<img width="2880" height="1376" alt="image" src="https://github.com/user-attachments/assets/523d46ee-8311-421a-9807-dcb4997d1943" />
+
 
 Key panels:
 
