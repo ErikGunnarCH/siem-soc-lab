@@ -8,19 +8,21 @@ All images were selected from the completed lab, cropped to remove unnecessary b
 
 ### SOC Executive Overview
 
-![SOC Executive Overview](executive-overview.webp)
+![SOC Executive Overview] <img width="2880" height="1448" alt="image" src="https://github.com/user-attachments/assets/2fead378-bbc5-43b1-a3ba-4c833a21a13d" />
 
 Shows the executive-facing case view with total, active and closed case metrics plus priority and detection-rule context. This demonstrates that the project extends beyond isolated SPL searches into operational security reporting.
 
 ### SOC Triage Operations
 
-![SOC Triage Operations](triage-operations.webp)
+![SOC Triage Operations] <img width="2880" height="1326" alt="image" src="https://github.com/user-attachments/assets/80c34524-e836-42e3-8c1a-afe85c229dd3" />
+<img width="2880" height="1420" alt="image" src="https://github.com/user-attachments/assets/7179f22b-5f00-4603-8ad7-cecdb26719ee" />
+
 
 Shows an active analyst queue with case ownership, priority, SLA context and correlation details. This is evidence of a working triage workflow rather than a dashboard-only lab.
 
 ### Detection Coverage
 
-![SOC Detection Coverage](detection-coverage.webp)
+![SOC Detection Coverage] <img width="2880" height="1370" alt="image" src="https://github.com/user-attachments/assets/0711cf72-421b-4e7c-b81d-c55cb26abd22" />
 
 Shows the detection-engineering view with 5 implemented detections, 5 ATT&CK techniques, the rule catalog, ATT&CK coverage and data-source readiness.
 
